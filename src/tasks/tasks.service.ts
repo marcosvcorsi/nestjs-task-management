@@ -27,4 +27,8 @@ export class TasksService {
 
     return task;
   }
+
+  delete(id: string): void {
+    this.tasks = this.tasks.filter((task) => task.id !== id);
+  }
 }
