@@ -19,7 +19,7 @@ export class TasksController {
 
   @Get()
   getAll(@Query() filterDto: FilterTasksDto): Task[] {
-    return this.tasksService.getAll();
+    return this.tasksService.getAll(filterDto);
   }
 
   @Get('/:id')
