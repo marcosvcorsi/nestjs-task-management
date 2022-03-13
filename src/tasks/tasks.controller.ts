@@ -19,7 +19,7 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  getAll(@Query() filterDto: FilterTasksDto): Task[] {
+  async getAll(@Query() filterDto: FilterTasksDto): Promise<Task[]> {
     return this.tasksService.getAll(filterDto);
   }
 
@@ -29,12 +29,12 @@ export class TasksController {
   }
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto): Task {
+  create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
     return this.tasksService.create(createTaskDto);
   }
 
   @Delete('/:id')
-  delete(@Param('id') id: string): void {
+  async delete(@Param('id') id: string): Promise<void> {
     return this.tasksService.delete(id);
   }
 

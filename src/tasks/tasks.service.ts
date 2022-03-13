@@ -12,7 +12,7 @@ export class TasksService {
     private readonly tasksRepository: TasksRepository,
   ) {}
 
-  getAll(filter: FilterTasksDto): Task[] {
+  getAll(filter: FilterTasksDto): Promise<Task[]> {
     // const { search, status } = filter;
     // if (search || status) {
     //   return this.tasks.filter(
@@ -23,7 +23,7 @@ export class TasksService {
     //   );
     // }
     // return this.tasks;
-    return [];
+    return this.tasksRepository.find();
   }
 
   async getById(id: string): Promise<Task> {
@@ -36,22 +36,14 @@ export class TasksService {
     return task;
   }
 
-  create({ title, description }: CreateTaskDto): Task {
-    // const task: Task = {
-    //   id: uuid(),
-    //   title,
-    //   description,
-    //   status: TaskStatus.OPEN,
-    // };
-    // this.tasks.push(task);
-    // return task;
-
-    return null;
+  async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.tasksRepository.createTask(createTaskDto);
   }
 
-  delete(id: string): void {
-    // this.getById(id);
-    // this.tasks = this.tasks.filter((task) => task.id !== id);
+  async delete(id: string): Promise<void> {
+    await this.getById(id);
+
+    await this.tasksRepository.softDelete(id);
   }
 
   updateStatus(id: string, status: TaskStatus): Task {
