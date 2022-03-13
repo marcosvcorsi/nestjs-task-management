@@ -11,7 +11,7 @@ import {
 import { CreateTaskDto } from './dto/create-task.dto';
 import { FilterTasksDto } from './dto/filter-tasks.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
-import { Task, TaskStatus } from './task.model';
+import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
@@ -24,7 +24,7 @@ export class TasksController {
   }
 
   @Get('/:id')
-  getById(@Param('id') id: string): Task {
+  async getById(@Param('id') id: string): Promise<Task> {
     return this.tasksService.getById(id);
   }
 
