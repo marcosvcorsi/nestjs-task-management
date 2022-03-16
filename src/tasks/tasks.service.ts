@@ -13,16 +13,12 @@ export class TasksService {
   ) {}
 
   getAll(filter: FilterTasksDto): Promise<Task[]> {
-    // const { search, status } = filter;
-    // if (search || status) {
-    //   return this.tasks.filter(
-    //     (task) =>
-    //       (status && task.status === status) ||
-    //       (search && task.title.toLowerCase().includes(search.toLowerCase())) ||
-    //       task.description.toLowerCase().includes(search.toLowerCase()),
-    //   );
-    // }
-    // return this.tasks;
+    const { search, status } = filter;
+
+    if (search || status) {
+      return this.tasksRepository.createQueryBuilder('task').getMany();
+    }
+
     return this.tasksRepository.find();
   }
 
@@ -41,16 +37,18 @@ export class TasksService {
   }
 
   async delete(id: string): Promise<void> {
-    await this.getById(id);
+    const { affected } = await this.tasksRepository.softDelete(id);
 
-    await this.tasksRepository.softDelete(id);
+    if (!affected) {
+      throw new NotFoundException('Task not found');
+    }
   }
 
-  updateStatus(id: string, status: TaskStatus): Task {
-    // const task = this.getById(id);
-    // task.status = status;
-    // return task;
+  async updateStatus(id: string, status: TaskStatus): Promise<Task> {
+    const task = await this.getById(id);
 
-    return null;
+    task.status = status;
+
+    return this.tasksRepository.save(task);
   }
 }

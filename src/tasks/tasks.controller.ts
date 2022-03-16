@@ -29,7 +29,7 @@ export class TasksController {
   }
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+  async create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
     return this.tasksService.create(createTaskDto);
   }
 
@@ -39,10 +39,10 @@ export class TasksController {
   }
 
   @Patch('/:id/status')
-  updateStatus(
+  async updateStatus(
     @Param('id') id: string,
     @Body() { status }: UpdateTaskStatusDto,
-  ): Task {
+  ): Promise<Task> {
     return this.tasksService.updateStatus(id, status);
   }
 }
