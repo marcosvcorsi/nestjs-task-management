@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { HashService } from './hash.service';
@@ -19,5 +19,15 @@ export class AuthService {
       username,
       password: hashPassword,
     });
+  }
+
+  async signIn({ username, password }: AuthCredentialsDto): Promise<string> {
+    const user = await this.usersRepository.findOne({ username });
+
+    if (!user && !(await this.hashService.compare(password, user.password))) {
+      throw new UnauthorizedException('Username or password is incorrect');
+    }
+
+    return user.username;
   }
 }
