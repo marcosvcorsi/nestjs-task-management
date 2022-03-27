@@ -20,16 +20,19 @@ export class TasksRepository extends Repository<Task> {
     return this.save(task);
   }
 
-  async getTasks({ status, search }: FilterTasksDto): Promise<Task[]> {
-    const query = this.createQueryBuilder('task');
+  async getTasks(
+    { status, search }: FilterTasksDto,
+    user: User,
+  ): Promise<Task[]> {
+    const query = this.createQueryBuilder('task').where({ user });
 
     if (status) {
-      query.where('task.status = :status', { status });
+      query.andWhere('task.status = :status', { status });
     }
 
     if (search) {
       query.andWhere(
-        'task.title ILIKE :search OR task.description ILIKE :search',
+        '(task.title ILIKE :search OR task.description ILIKE :search)',
         { search: `%${search}%` },
       );
     }

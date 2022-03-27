@@ -13,14 +13,8 @@ export class TasksService {
     private readonly tasksRepository: TasksRepository,
   ) {}
 
-  getAll(filter: FilterTasksDto): Promise<Task[]> {
-    const { search, status } = filter;
-
-    if (search || status) {
-      return this.tasksRepository.createQueryBuilder('task').getMany();
-    }
-
-    return this.tasksRepository.find();
+  getAll(filter: FilterTasksDto, user: User): Promise<Task[]> {
+    return this.tasksRepository.getTasks(filter, user);
   }
 
   async getById(id: string): Promise<Task> {
