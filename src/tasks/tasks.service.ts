@@ -17,8 +17,13 @@ export class TasksService {
     return this.tasksRepository.getTasks(filter, user);
   }
 
-  async getById(id: string): Promise<Task> {
-    const task = await this.tasksRepository.findOne(id);
+  async getById(id: string, user: User): Promise<Task> {
+    const task = await this.tasksRepository.findOne({
+      where: {
+        id,
+        user,
+      },
+    });
 
     if (!task) {
       throw new NotFoundException('Task not found');
@@ -31,16 +36,20 @@ export class TasksService {
     return this.tasksRepository.createTask(createTaskDto, user);
   }
 
-  async delete(id: string): Promise<void> {
-    const { affected } = await this.tasksRepository.softDelete(id);
+  async delete(id: string, user: User): Promise<void> {
+    const { affected } = await this.tasksRepository.softDelete({ id, user });
 
     if (!affected) {
       throw new NotFoundException('Task not found');
     }
   }
 
-  async updateStatus(id: string, status: TaskStatus): Promise<Task> {
-    const task = await this.getById(id);
+  async updateStatus(
+    id: string,
+    status: TaskStatus,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.getById(id, user);
 
     task.status = status;
 
